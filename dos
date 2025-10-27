@@ -1,0 +1,18 @@
+# Save as locustfile.py
+# Usage (authorized targets only):
+#   locust -f locustfile.py --host=http://your-target.example
+# then open the Locust web UI and start the test.
+
+from locust import HttpUser, task, between
+
+class WebsiteUser(HttpUser):
+    wait_time = between(1, 5)  # simulate real user think time
+
+    @task(3)
+    def index(self):
+        self.client.get("/")
+
+    @task(1)
+    def login_and_check(self):
+        # Example of a lightweight POST — do not send real credentials
+        self.client.post("/login", json={"username":"test", "password":"test"}, catch_response=True)
